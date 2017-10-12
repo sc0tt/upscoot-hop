@@ -1,0 +1,104 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>Hop - Upscoot</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <script
+          src="https://code.jquery.com/jquery-3.2.1.min.js"
+          integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+          crossorigin="anonymous"></script>
+        <style>
+          body {
+            font-family: Helvetica;
+            box-sizing: border-box;
+          }
+          h2 {
+            width: 100%;
+            padding: 5px 20px;
+            background-color: #EFEFEF;
+            margin: 0px;
+          }
+          .photos {
+             /* Prevent vertical gaps */
+             line-height: 0;
+             
+             -webkit-column-count: 5;
+             -webkit-column-gap:   0px;
+             -moz-column-count:    5;
+             -moz-column-gap:      0px;
+             column-count:         5;
+             column-gap:           0px;
+          }
+
+          .photos img {
+            /* Just in case there are inline attributes */
+            width: 100% !important;
+            height: auto !important;
+            padding: 3px;
+          }
+
+          @media (max-width: 1200px) {
+            .photos {
+            -moz-column-count:    4;
+            -webkit-column-count: 4;
+            column-count:         4;
+            }
+          }
+          @media (max-width: 1000px) {
+            .photos {
+            -moz-column-count:    3;
+            -webkit-column-count: 3;
+            column-count:         3;
+            }
+          }
+          @media (max-width: 800px) {
+            .photos {
+            -moz-column-count:    2;
+            -webkit-column-count: 2;
+            column-count:         2;
+            }
+          }
+          @media (max-width: 400px) {
+            .photos {
+            -moz-column-count:    1;
+            -webkit-column-count: 1;
+            column-count:         1;
+            }
+          }
+
+          body {
+            margin: 0;
+            padding: 0;
+          }
+        </style>
+    </head>
+    <body>
+      <div id="photos-container"></div>
+
+      <script type="text/javascript">
+        $.ajax({
+          'method': 'GET',
+          'url': 'http://i.sc0tt.net/hop.json',
+          'success': function(response){
+            console.log(response);
+            var allImages = "";
+
+            for(var year in response) {
+              allImages += "<h2>"+year+"</h2><section class='photos'>";
+              for (var i = 0; i < response[year].length; i++) {
+                var img = response[year][i];
+                allImages += '<a href='+img+'><img src="'+img+'" alt="'+img+'"></a>';
+              }
+              allImages += "</section>";
+            }
+
+            $('#photos-container').append(allImages);
+          }
+        });
+        
+      </script>
+    </body>
+</html>
