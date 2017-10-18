@@ -79,9 +79,25 @@
       <div id="photos-container"></div>
 
       <script type="text/javascript">
+
+        var month = getParameterByName('m'); // "lorem"
+        var day = getParameterByName('d');
+        var query_params = [];
+        var query_string = "";
+        if(month) {
+          query_params.push("m="+month);
+        }
+        if(day) {
+          query_params.push("d="+day);
+        }
+
+        if(query_params.length) {
+          query_string = "?" + query_params.join("&")
+        }
+
         $.ajax({
           'method': 'GET',
-          'url': 'https://i.sc0tt.net/hop.json',
+          'url': 'https://i.sc0tt.net/hop.json' + query_string,
           'success': function(response){
             console.log(response);
             var allImages = "";
@@ -99,6 +115,16 @@
           }
         });
         
+
+        function getParameterByName(name, url) {
+          if (!url) url = window.location.href;
+          name = name.replace(/[\[\]]/g, "\\$&");
+          var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+              results = regex.exec(url);
+          if (!results) return null;
+          if (!results[2]) return '';
+          return decodeURIComponent(results[2].replace(/\+/g, " "));
+        }
       </script>
     </body>
 </html>
