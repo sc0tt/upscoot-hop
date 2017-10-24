@@ -76,6 +76,10 @@
         </style>
     </head>
     <body>
+      <div style="overflow: auto;">
+        <button style="float:left;" onclick="selectDay(-1)">Previous</button>
+        <button style="float:right;" onclick="selectDay(1)">Next</button>
+      </div>
       <div id="photos-container"></div>
 
       <script type="text/javascript">
@@ -93,6 +97,19 @@
 
         if(query_params.length) {
           query_string = "?" + query_params.join("&")
+        }
+
+        function selectDay(val) {
+          if(!day) {
+            var dt = new Date();
+            day = dt.getDate()
+            month = dt.getMonth() + 1;
+          }
+
+          // TODO:
+          // support month change
+          var newday = parseInt(day)+val;
+          window.location.href = window.location.href + "?d="+newday+"&m="+month;
         }
 
         $.ajax({
