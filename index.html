@@ -85,8 +85,8 @@
       <script type="text/javascript">
 
         var image_types = ["jpg", "png", "gif", "jpeg", "webp"];
-        var month = getParameterByName('m'); // "lorem"
-        var day = getParameterByName('d');
+        var month = parseInt(getParameterByName('m')); // "lorem"
+        var day = parseInt(getParameterByName('d'));
         var query_params = [];
         var query_string = "";
         if(month) {
@@ -107,10 +107,8 @@
             month = dt.getMonth() + 1;
           }
 
-          // TODO:
-          // support month change
-          var newday = parseInt(day)+val;
-          window.location.href = window.location.href + "?d="+newday+"&m="+month;
+          var newday = new Date(new Date().getFullYear(), month, day + val);
+          window.location.href = window.location.origin + "?d="+newday.getDate()+"&m="+newday.getMonth();
         }
 
         $.ajax({
