@@ -33,7 +33,7 @@
              column-gap:           0px;
           }
 
-          .photos img {
+          .photos img, .media {
             /* Just in case there are inline attributes */
             width: 100% !important;
             height: auto !important;
@@ -41,28 +41,28 @@
           }
 
           @media (max-width: 1200px) {
-            .photos {
+            .photos, .media {
             -moz-column-count:    4;
             -webkit-column-count: 4;
             column-count:         4;
             }
           }
           @media (max-width: 1000px) {
-            .photos {
+            .photos, .media {
             -moz-column-count:    3;
             -webkit-column-count: 3;
             column-count:         3;
             }
           }
           @media (max-width: 800px) {
-            .photos {
+            .photos, .media {
             -moz-column-count:    2;
             -webkit-column-count: 2;
             column-count:         2;
             }
           }
           @media (max-width: 400px) {
-            .photos {
+            .photos, .media {
             -moz-column-count:    1;
             -webkit-column-count: 1;
             column-count:         1;
@@ -76,12 +76,17 @@
         </style>
     </head>
     <body>
+      <div style="overflow: auto;">
+        <button style="float:left;" onclick="selectDay(-1)">Previous</button>
+        <button style="float:right;" onclick="selectDay(1)">Next</button>
+      </div>
       <div id="photos-container"></div>
 
       <script type="text/javascript">
 
-        var month = getParameterByName('m'); // "lorem"
-        var day = getParameterByName('d');
+        var image_types = ["jpg", "png", "gif", "jpeg", "webp"];
+        var month = parseInt(getParameterByName('m')); // "lorem"
+        var day = parseInt(getParameterByName('d'));
         var query_params = [];
         var query_string = "";
         if(month) {
@@ -95,6 +100,17 @@
           query_string = "?" + query_params.join("&")
         }
 
+        function selectDay(val) {
+          if(!day) {
+            var dt = new Date();
+            day = dt.getDate()
+            month = dt.getMonth() + 1;
+          }
+
+          var newday = new Date(new Date().getFullYear(), month, day + val);
+          window.location.href = window.location.origin + "?d="+newday.getDate()+"&m="+newday.getMonth();
+        }
+
         $.ajax({
           'method': 'GET',
           'url': 'https://i.sc0tt.net/hop.json' + query_string,
@@ -106,7 +122,7 @@
               allImages += "<h2>"+year+"</h2><section class='photos'>";
               for (var i = 0; i < response[year].length; i++) {
                 var img = response[year][i];
-                allImages += '<a href='+img+'><img src="'+img+'" alt="'+img+'"></a>';
+                allImages += getHtml(img);
               }
               allImages += "</section>";
             }
@@ -114,7 +130,20 @@
             $('#photos-container').append(allImages);
           }
         });
+
+        function getHtml(url) {
+          var ext = url.split('.').pop().toLowerCase();
         
+          if (ext == 'mp4') {
+            return '<video controls class="media"><source src="'+url+'" type="video/'+ext+'"></video>';
+          } else if (ext == 'mp3') {
+            return '<audio controls class="media"><source src="'+url+'" type="audio/'+ext+'"></audio>';
+          } else if (image_types.includes(ext)) {
+            return '<a href='+url+'><img src="'+url+'" alt="'+url+'"></a>';
+          } else {
+            return url;
+          }
+        }
 
         function getParameterByName(name, url) {
           if (!url) url = window.location.href;
